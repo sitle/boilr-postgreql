@@ -1,0 +1,19 @@
+{
+    "name": "mon-projet",
+    "namespace": "mon-projet",
+    "environment": [
+        "dev",
+        "staging",
+        "preprod"
+    ],
+    "creator": "Leonard TAVAE",
+    "db_size": "2",
+    "image": "govpf/postgres:11",
+    "user_account": "user",
+    "user_password": "password",
+    "service_type" : [
+        "ClusterIP",
+        "NodePort",
+        "LoadBalancer"
+    ]
+}

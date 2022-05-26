@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ name }}
+  namespace: {{ namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ name }}-db-{{ environment }}
+  serviceName: "{{ name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ name }}-db-{{ environment }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{ name }}-db-{{ environment }}
+        image: {{ image }}
+        ports:
+        - containerPort: 5432
+          name: {{ name }}-db-{{ environment }}
+        volumeMounts:
+        - name: {{ name }}-db-{{ environment }}-pvc
+          mountPath: /var/lib/postgresql/data
+        env:
+        - name: POSTGRES_DB
+          value: {{ name }}-db-{{ environment }}
+        - name: POSTGRES_USER
+          value: {{ user_account }}
+        - name: POSTGRES_PASSWORD
+          value: {{ user_password }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ name }}-db-{{ environment }}-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "vsphere-csi"
+      resources:
+        requests:
+          storage: {{ db_size }}Gi
